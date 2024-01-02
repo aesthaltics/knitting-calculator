@@ -124,7 +124,7 @@ type AddStitchesFormProps = {
 	current_to_add_num: number
 };
 
-export function AddStitchesForm({calculatePattern, current_num, current_to_add_num}: AddStitchesFormProps) {
+function AddStitchesForm({calculatePattern, current_num, current_to_add_num}: AddStitchesFormProps) {
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
