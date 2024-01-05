@@ -50,7 +50,7 @@ export default function Home() {
 		const isOdd = (a: number) => a % 2 === 1;
 
 		if (Number.isInteger(average_distance)) {
-			return [average_distance];
+			return setSimplestPattern([average_distance]);
 		}
 
 		const long_distance = Math.ceil(average_distance);
