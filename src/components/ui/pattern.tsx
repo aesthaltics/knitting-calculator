@@ -17,7 +17,8 @@ const Pattern = ({ showPattern, simplestPattern }: pattern_props) => {
 
 	const cellWidth = Math.max(
 		35,
-		(window_ref.current?.clientWidth ?? 0) / pattern_length
+		Math.min((window_ref.current?.clientWidth ?? 0) / pattern_length, 100)
+		
 	);
 
 	const toggleAuto = () => {

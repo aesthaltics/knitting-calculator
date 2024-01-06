@@ -12,11 +12,7 @@ import {
 	DrawerHeader,
 	DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
 	Form,
 	FormControl,
@@ -287,13 +283,14 @@ const CalculationFormDrawer = ({
 									</div>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
-									<DropdownMenuLabel>
+									<DropdownMenuLabel className="text-lg">
 										Kalulasjon
 									</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									{Object.keys(algos).map((algo) => {
 										return (
 											<DropdownMenuItem
+												className="text-md py-3"
 												key={`algo dropdown ${algo}`}
 												onClick={() => {
 													setCurrentAlgo(
