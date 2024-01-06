@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, ChevronDown } from "lucide-react";
 import {
 	Drawer,
 	DrawerClose,
@@ -15,9 +15,7 @@ import {
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardHeader,
-	CardTitle,
 } from "@/components/ui/card";
 import {
 	Form,
@@ -27,25 +25,32 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 
 import { Button } from "@/components/ui/button";
 
 import Pattern from "@/components/ui/pattern";
 
-import { addStitchesEvenly } from "@/lib/knitting-algos";
+import { addStitchesEvenly, removeStitchesEvenly } from "@/lib/knitting-algos";
 
 export default function Home() {
 	const [showPattern, setShowPattern] = useState<boolean>(true);
 	const [simplestPattern, setSimplestPattern] = useState<number[]>([]);
-
 
 	return (
 		<main className="flex h-screen max-h-screen w-srceen flex-col items-center justify-between py-24">
 			<h1 className="text-5xl font-bold text-soft-blue">
 				Jevn fordeling av nye masker
 			</h1>
-			{simplestPattern.length > 0 &&
+			{simplestPattern.length > 0 && (
 				<div className="flex flex-col gap-5 items-center w-full">
 					<Button
 						onClick={() =>
@@ -60,10 +65,10 @@ export default function Home() {
 						simplestPattern={simplestPattern}
 					/>
 				</div>
-			}
+			)}
 			<div className="flex flex-col justify-center items-center w-full">
 				<div>
-					<AddStitchesDrawer  setPattern={setSimplestPattern}/>
+					<CalculationFormDrawer setPattern={setSimplestPattern} />
 				</div>
 			</div>
 		</main>
@@ -71,29 +76,34 @@ export default function Home() {
 }
 
 const formSchema = z.object({
-	current_mask_num: z.number({ coerce: true }).int().min(0),
-	masks_to_add: z.number({ coerce: true }).min(1, {
+	field_1: z.number({ coerce: true }).int().min(0),
+	field_2: z.number({ coerce: true }).min(1, {
 		message: "Minst en",
 	}),
 });
 
-type AddStitchesFormProps = {
-	setPattern: (pattern: number[]) => void,
-	current_num: number;
-	current_to_add_num: number;
+type CalculationFormProps = {
+	field_name_1: string;
+	field_name_2: string;
+
+	submitFunc: (field_val_1: number, field_val_2: number) => void;
+	field_val_1: number;
+	field_val_2: number;
 };
 
-function AddStitchesForm({
-	setPattern,
-	current_num,
-	current_to_add_num,
-}: AddStitchesFormProps) {
+function CalculationForm({
+	field_name_1,
+	field_name_2,
+	submitFunc,
+	field_val_1,
+	field_val_2,
+}: CalculationFormProps) {
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			current_mask_num: current_num,
-			masks_to_add: current_to_add_num,
+			field_1: field_val_1,
+			field_2: field_val_2,
 		},
 	});
 
@@ -101,7 +111,7 @@ function AddStitchesForm({
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
-		setPattern(addStitchesEvenly(values.current_mask_num, values.masks_to_add))
+		submitFunc(values.field_1, values.field_2);
 	}
 
 	const changeVal = (name: keyof typeof formSchema.shape, amount: number) => {
@@ -120,23 +130,20 @@ function AddStitchesForm({
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 				<FormField
 					control={form.control}
-					name="current_mask_num"
+					name="field_1"
 					render={({ field }) => (
 						<FormItem>
 							<div className="flex flex-row items-center justify-between pr-14">
-								<FormLabel>Masker</FormLabel>
+								<FormLabel>{field_name_1}</FormLabel>
 								<div className="flex flex-row items-center justify-around w-7/12 gap-2">
 									<Button
 										variant="outline"
 										size="icon"
 										className="h-8 w-8 shrink-0 rounded-full"
 										onClick={() =>
-											changeVal("current_mask_num", -10)
+											changeVal("field_1", -10)
 										}
-										disabled={
-											form.getValues("current_mask_num") <
-											2
-										}
+										disabled={form.getValues("field_1") < 2}
 									>
 										<Minus className="h-4 w-4" />
 										<span className="sr-only">
@@ -151,12 +158,9 @@ function AddStitchesForm({
 										variant="outline"
 										size="icon"
 										className="h-8 w-8 shrink-0 rounded-full"
-										onClick={() =>
-											changeVal("current_mask_num", 10)
-										}
+										onClick={() => changeVal("field_1", 10)}
 										disabled={
-											form.getValues("current_mask_num") >
-											10000
+											form.getValues("field_1") > 10000
 										}
 									>
 										<Plus className="h-4 w-4" />
@@ -172,22 +176,20 @@ function AddStitchesForm({
 				/>
 				<FormField
 					control={form.control}
-					name="masks_to_add"
+					name="field_2"
 					render={({ field }) => (
 						<FormItem>
 							<div className="flex flex-row items-center justify-between pr-14">
-								<FormLabel>Nye Masker</FormLabel>
+								<FormLabel>{field_name_2}</FormLabel>
 								<div className="flex flex-row items-center justify-around w-7/12 gap-2">
 									<Button
 										variant="outline"
 										size="icon"
 										className="h-8 w-8 shrink-0 rounded-full"
 										onClick={() =>
-											changeVal("masks_to_add", -10)
+											changeVal("field_2", -10)
 										}
-										disabled={
-											form.getValues("masks_to_add") < 2
-										}
+										disabled={form.getValues("field_2") < 2}
 									>
 										<Minus className="h-4 w-4" />
 										<span className="sr-only">
@@ -202,12 +204,9 @@ function AddStitchesForm({
 										variant="outline"
 										size="icon"
 										className="h-8 w-8 shrink-0 rounded-full"
-										onClick={() =>
-											changeVal("masks_to_add", 10)
-										}
+										onClick={() => changeVal("field_2", 10)}
 										disabled={
-											form.getValues("masks_to_add") >
-											10000
+											form.getValues("field_2") > 10000
 										}
 									>
 										<Plus className="h-4 w-4" />
@@ -229,31 +228,97 @@ function AddStitchesForm({
 	);
 }
 
-const AddStitchesDrawer = ({
+const CalculationFormDrawer = ({
 	setPattern,
 }: {
-	setPattern: (pattern: number[]) => void,
+	setPattern: (pattern: number[]) => void;
 }) => {
+	const [formValues, setFormValues] = useState({
+		field_1: 170,
+		field_2: 30,
+		field_name_1: "Nåværende masker",
+		field_name_2: "Nye masker",
+	});
+	const [currentAlgo, setCurrentAlgo] =
+		useState<algo_name>("Legg til Masker");
+	const algos = {
+		"Legg til Masker": addStitchesEvenly,
+		"Fell Masker": removeStitchesEvenly,
+	};
+	type algo_name = keyof typeof algos;
+
+	const calculate = (value_1: number, value_2: number) => {
+		setFormValues({
+			...formValues,
+			field_1: value_1,
+			field_2: value_2,
+		});
+		setPattern(algos[currentAlgo](value_1, value_2));
+	};
+
+	const fieldNames: {
+		[algo: string]: { field_name_1: string; field_name_2: string };
+	} = {
+		"Legg til Masker": {
+			field_name_1: "Nåværende masker",
+			field_name_2: "Nye masker",
+		},
+		"Fell Masker": {
+			field_name_1: "Nåværende masker",
+			field_name_2: "Masker å fjerne",
+		},
+	};
+
 	return (
 		<Drawer>
 			<DrawerTrigger asChild>
-				<Button>
-					Legg til masker
-				</Button>
+				<Button>Legg inn kalkulasjon</Button>
 			</DrawerTrigger>
 			<DrawerContent>
 				<div className="mx-auto w-full max-w-sm">
 					<DrawerHeader></DrawerHeader>
 					<Card>
 						<CardHeader>
-							<CardTitle>Tittel</CardTitle>
-							<CardDescription>Beskrivelse</CardDescription>
+							<DropdownMenu>
+								<DropdownMenuTrigger>
+									<div className="flex flex-row items-center justify-center gap-1">
+										{currentAlgo}
+										<ChevronDown />
+									</div>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent>
+									<DropdownMenuLabel>
+										Kalulasjon
+									</DropdownMenuLabel>
+									<DropdownMenuSeparator />
+									{Object.keys(algos).map((algo) => {
+										return (
+											<DropdownMenuItem
+												key={`algo dropdown ${algo}`}
+												onClick={() => {
+													setCurrentAlgo(
+														algo as algo_name
+													);
+													setFormValues({
+														...formValues,
+														...fieldNames[algo],
+													});
+												}}
+											>
+												{algo}
+											</DropdownMenuItem>
+										);
+									})}
+								</DropdownMenuContent>
+							</DropdownMenu>
 						</CardHeader>
 						<CardContent>
-							<AddStitchesForm
-								setPattern={setPattern}
-								current_to_add_num={30}
-								current_num={170}
+							<CalculationForm
+								field_name_1={formValues.field_name_1}
+								field_name_2={formValues.field_name_2}
+								submitFunc={calculate}
+								field_val_1={formValues.field_1}
+								field_val_2={formValues.field_2}
 							/>
 						</CardContent>
 					</Card>
