@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
-import { PluginAPI, PluginCreator } from "tailwindcss/types/config";
-const plugin = require("tailwindcss/plugin");
+import { PluginAPI } from "tailwindcss/types/config";
+import plugin from 'tailwindcss/plugin'
 
 const config = {
 	darkMode: ["class"],
@@ -90,7 +90,7 @@ const config = {
 					/* Hide scrollbar for Chrome, Safari and Opera */
 				},
 			});
-		}) as PluginCreator,
+		}),
 	],
 } satisfies Config;
 

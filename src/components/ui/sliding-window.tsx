@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode, useRef } from "react";
+import React, { ReactNode, useRef } from "react";
 type SlidingWindowProps = {
 	children: ReactNode;
 };
@@ -17,19 +17,15 @@ type WindowElementProps = {
 	index: number;
 	current_index: number;
 	marker_width: number;
-	scroll: (e:Element|null, index:number) => void
+	scroll: (e: Element | null, index: number) => void;
 };
-export const WindowElement = React.forwardRef(function WindowElement(
-	props: WindowElementProps,
-	ref: React.ForwardedRef<HTMLDivElement>
-) {
+export const WindowElement = (props: WindowElementProps) => {
 	const { children, index, current_index, marker_width, scroll } = props;
 
-	const internalRef = useRef<HTMLDivElement>(null)
+	const internalRef = useRef<HTMLDivElement>(null);
 
 	if (index === current_index) {
-		scroll(internalRef.current, index)
-		ref = internalRef
+		scroll(internalRef.current, index);
 	}
 	return (
 		<div
@@ -45,6 +41,6 @@ export const WindowElement = React.forwardRef(function WindowElement(
 			{children}
 		</div>
 	);
-});
+};
 
 export default SlidingWindow;

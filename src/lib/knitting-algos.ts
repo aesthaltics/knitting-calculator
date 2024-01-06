@@ -1,4 +1,5 @@
 export const addStitchesEvenly = (current_masks: number, added_amount: number) => {
+	
 	const average_distance = (current_masks + added_amount) / added_amount;
 	const find_gcd = (a: number, b: number): number => {
 		return b ? find_gcd(b, a % b) : a;
@@ -37,7 +38,7 @@ export const addStitchesEvenly = (current_masks: number, added_amount: number) =
 		return middle;
 	}
 
-	let simplest_period = [...Array(shortest_period / 2 + 1).keys()]
+	const simplest_period = [...Array(shortest_period / 2 + 1).keys()]
 		.slice(1)
 		.map((num) => {
 			const least_common =

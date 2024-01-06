@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, RefObject } from "react";
+import { useState, useRef } from "react";
 import SlidingWindow, { WindowElement } from "./sliding-window";
 import { Button } from "./button";
 
@@ -11,7 +11,6 @@ type pattern_props = {
 const Pattern = ({ showPattern, simplestPattern }: pattern_props) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [autoId, setAutoId] = useState<number | undefined>(undefined);
-	const activeCellRef = useRef<HTMLDivElement>(null);
 	const window_ref = useRef<HTMLDivElement>(null);
 
 	const pattern_length = simplestPattern.reduce((acc, cur) => acc + cur, 0);
@@ -28,7 +27,7 @@ const Pattern = ({ showPattern, simplestPattern }: pattern_props) => {
 			return;
 		}
 
-		let newAutoId = window.setInterval(() => {
+		const newAutoId = window.setInterval(() => {
 			setCurrentIndex(
 				(currentIndex) => (currentIndex + 1) % pattern_length
 			);
@@ -47,9 +46,9 @@ const Pattern = ({ showPattern, simplestPattern }: pattern_props) => {
 		});
 	};
 	const patternToSquares = (pattern: number[]) => {
-		let squares: { [index: string]: boolean } = {};
+		const squares: { [index: string]: boolean } = {};
 		let current_index = 0;
-		for (let distance of pattern) {
+		for (const distance of pattern) {
 			for (let i = 0; i < distance; i++) {
 				if (i === 0) {
 					squares[current_index.toString()] = true;
@@ -87,7 +86,6 @@ const Pattern = ({ showPattern, simplestPattern }: pattern_props) => {
 							current_index={currentIndex}
 							index={i}
 							key={`window element${i}`}
-							ref={activeCellRef}
 							marker_width={cellWidth / 3}
 							scroll={scollToView}
 						>
@@ -134,7 +132,6 @@ const Pattern_square = ({
 	num,
 	isActive,
 	showPattern,
-	totalAmount,
 	cellWidth,
 }: pattern_square_props) => {
 	return (
