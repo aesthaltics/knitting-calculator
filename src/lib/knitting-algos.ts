@@ -1,4 +1,4 @@
-import { find_gcd } from "./utils";
+import { find_gcd, isOdd } from "./utils";
 
 export const addStitchesEvenly = (
 	current_masks: number,
@@ -14,10 +14,29 @@ export const addStitchesEvenly = (
 	 * @alpha
 	 */
 	const average_distance = (current_masks + added_amount) / added_amount;
+	const num_long_mask = (current_masks + added_amount) % added_amount;
+	const num_short_mask = added_amount - num_long_mask;
+	return generateEvenPattern(average_distance, num_long_mask, num_short_mask);
+};
 
+export const removeStitchesEvenly = (
+	current_stiches_amount: number,
+	number_of_stitches_to_remove: number
+) => {
+	const average_distance =
+		current_stiches_amount / number_of_stitches_to_remove;
+	
+	const num_long_dist = current_stiches_amount % number_of_stitches_to_remove
+	const num_short_dist = number_of_stitches_to_remove - num_long_dist
 
-	const isOdd = (a: number) => a % 2 === 1;
+	return generateEvenPattern(average_distance, num_long_dist, num_short_dist)
+};
 
+const generateEvenPattern = (
+	average_distance: number,
+	num_long_dist: number,
+	num_short_dist: number
+) => {
 	if (Number.isInteger(average_distance)) {
 		return [average_distance];
 	}
@@ -25,25 +44,22 @@ export const addStitchesEvenly = (
 	const long_distance = Math.ceil(average_distance);
 	const short_distance = long_distance - 1;
 
-	let num_long_mask = (current_masks + added_amount) % added_amount;
-	let num_short_mask = added_amount - num_long_mask;
+	const gcd = find_gcd(num_long_dist, num_short_dist);
 
-	const gcd = find_gcd(num_long_mask, num_short_mask);
-
-	num_long_mask = num_long_mask / gcd;
-	num_short_mask = num_short_mask / gcd;
+	num_long_dist = num_long_dist / gcd;
+	num_short_dist = num_short_dist / gcd;
 
 	const middle = [];
-	if (isOdd(num_long_mask)) {
-		num_long_mask--;
+	if (isOdd(num_long_dist)) {
+		num_long_dist--;
 		middle.push(long_distance);
 	}
-	if (isOdd(num_short_mask)) {
-		num_short_mask--;
+	if (isOdd(num_short_dist)) {
+		num_short_dist--;
 		middle.push(short_distance);
 	}
 
-	const shortest_period = num_long_mask + num_short_mask;
+	const shortest_period = num_long_dist + num_short_dist;
 
 	if (shortest_period == 0) {
 		return middle;
@@ -53,13 +69,13 @@ export const addStitchesEvenly = (
 		.slice(1)
 		.map((num) => {
 			const least_common =
-				num_long_mask > num_short_mask
-					? [short_distance, num_short_mask]
-					: [long_distance, num_long_mask];
+				num_long_dist > num_short_dist
+					? [short_distance, num_short_dist]
+					: [long_distance, num_long_dist];
 			const most_common =
 				least_common[0] === short_distance
-					? [long_distance, num_long_mask]
-					: [short_distance, num_short_mask];
+					? [long_distance, num_long_dist]
+					: [short_distance, num_short_dist];
 			if (!isOdd(num) && least_common[1] >= num) {
 				return least_common[0];
 			}
