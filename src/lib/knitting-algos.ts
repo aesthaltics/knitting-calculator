@@ -1,9 +1,20 @@
-export const addStitchesEvenly = (current_masks: number, added_amount: number) => {
-	
+import { find_gcd } from "./utils";
+
+export const addStitchesEvenly = (
+	current_masks: number,
+	added_amount: number
+) => {
+	/**
+	 * Calculates the intervals for evenly adding new stitches when knitting
+	 *
+	 * @param current_masks - The current number of stitches
+	 * @param added_amount - The number of stitches to add
+	 *
+	 * @returns A number[] where each number represents the distance between the new stitches. This is the simplest repeatable period.
+	 * @alpha
+	 */
 	const average_distance = (current_masks + added_amount) / added_amount;
-	const find_gcd = (a: number, b: number): number => {
-		return b ? find_gcd(b, a % b) : a;
-	};
+
 
 	const isOdd = (a: number) => a % 2 === 1;
 
