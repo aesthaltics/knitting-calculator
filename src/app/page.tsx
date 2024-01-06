@@ -37,74 +37,12 @@ import { Button } from "@/components/ui/button";
 
 import Pattern from "@/components/ui/pattern";
 
+import { addStitchesEvenly } from "@/lib/knitting-algos";
+
 export default function Home() {
 	const [showPattern, setShowPattern] = useState<boolean>(true);
 	const [simplestPattern, setSimplestPattern] = useState<number[]>([]);
 
-	const calculatePattern = (current_masks: number, added_amount: number) => {
-		const average_distance = (current_masks + added_amount) / added_amount;
-		const find_gcd = (a: number, b: number): number => {
-			return b ? find_gcd(b, a % b) : a;
-		};
-
-		const isOdd = (a: number) => a % 2 === 1;
-
-		if (Number.isInteger(average_distance)) {
-			return setSimplestPattern([average_distance]);
-		}
-
-		const long_distance = Math.ceil(average_distance);
-		const short_distance = long_distance - 1;
-
-		let num_long_mask = (current_masks + added_amount) % added_amount;
-		let num_short_mask = added_amount - num_long_mask;
-
-		const gcd = find_gcd(num_long_mask, num_short_mask);
-
-		num_long_mask = num_long_mask / gcd;
-		num_short_mask = num_short_mask / gcd;
-
-		const middle = [];
-		if (isOdd(num_long_mask)) {
-			num_long_mask--;
-			middle.push(long_distance);
-		}
-		if (isOdd(num_short_mask)) {
-			num_short_mask--;
-			middle.push(short_distance);
-		}
-
-		const shortest_period = num_long_mask + num_short_mask
-
-		if (shortest_period == 0) {
-			return middle;
-		}
-
-		let simplest_period = [...Array(shortest_period / 2 + 1).keys()]
-			.slice(1)
-			.map((num) => {
-				const least_common =
-					num_long_mask > num_short_mask
-						? [short_distance, num_short_mask]
-						: [long_distance, num_long_mask];
-				const most_common =
-					least_common[0] === short_distance
-						? [long_distance, num_long_mask]
-						: [short_distance, num_short_mask];
-				if (!isOdd(num) && least_common[1] >= num) {
-					return least_common[0];
-				}
-				return most_common[0];
-			});
-		simplest_period = [
-			...simplest_period,
-			...middle,
-			...simplest_period.toReversed(),
-		];
-
-		setSimplestPattern(simplest_period);
-		return;
-	};
 
 	return (
 		<main className="flex h-screen max-h-screen w-srceen flex-col items-center justify-between py-24">
@@ -129,7 +67,7 @@ export default function Home() {
 			}
 			<div className="flex flex-col justify-center items-center w-full">
 				<div>
-					<AddStitchesDrawer calculatePattern={calculatePattern} />
+					<AddStitchesDrawer  setPattern={setSimplestPattern}/>
 				</div>
 			</div>
 		</main>
@@ -144,13 +82,13 @@ const formSchema = z.object({
 });
 
 type AddStitchesFormProps = {
-	calculatePattern: (a: number, b: number) => void;
+	setPattern: (pattern: number[]) => void,
 	current_num: number;
 	current_to_add_num: number;
 };
 
 function AddStitchesForm({
-	calculatePattern,
+	setPattern,
 	current_num,
 	current_to_add_num,
 }: AddStitchesFormProps) {
@@ -167,7 +105,7 @@ function AddStitchesForm({
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
-		calculatePattern(values.current_mask_num, values.masks_to_add);
+		setPattern(addStitchesEvenly(values.current_mask_num, values.masks_to_add))
 	}
 
 	const changeVal = (name: keyof typeof formSchema.shape, amount: number) => {
@@ -296,9 +234,9 @@ function AddStitchesForm({
 }
 
 const AddStitchesDrawer = ({
-	calculatePattern,
+	setPattern,
 }: {
-	calculatePattern: (a: number, b: number) => void;
+	setPattern: (pattern: number[]) => void,
 }) => {
 	return (
 		<Drawer>
@@ -317,7 +255,7 @@ const AddStitchesDrawer = ({
 						</CardHeader>
 						<CardContent>
 							<AddStitchesForm
-								calculatePattern={calculatePattern}
+								setPattern={setPattern}
 								current_to_add_num={30}
 								current_num={170}
 							/>
