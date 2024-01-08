@@ -12,28 +12,28 @@ const Store = () => {
 			</div>
 
 			<div className="flex flex-row w-full flex-wrap gap-4 justify-center">
-				<div className="w-1/5">
+				<div className="w-full md:w-1/3 lg:w-1/4">
 					<ItemCard />
 				</div>
-				<div className="w-1/5">
+				<div className="w-full md:w-1/3 lg:w-1/4">
 					<ItemCard />
 				</div>
-				<div className="w-1/5">
+				<div className="w-full md:w-1/3 lg:w-1/4">
 					<ItemCard />
 				</div>
-				<div className="w-1/5">
+				<div className="w-full md:w-1/3 lg:w-1/4">
 					<ItemCard />
 				</div>
-				<div className="w-1/5">
+				<div className="w-full md:w-1/3 lg:w-1/4">
 					<ItemCard />
 				</div>
-				<div className="w-1/5">
+				<div className="w-full md:w-1/3 lg:w-1/4">
 					<ItemCard />
 				</div>
-				<div className="w-1/5">
+				<div className="w-full md:w-1/3 lg:w-1/4">
 					<ItemCard />
 				</div>
-				<div className="w-1/5">
+				<div className="w-full md:w-1/3 lg:w-1/4">
 					<ItemCard />
 				</div>
 			</div>
