@@ -37,9 +37,12 @@ import Pattern from "@/components/ui/pattern";
 
 import { addStitchesEvenly, removeStitchesEvenly } from "@/lib/knitting-algos";
 
+// type page = "calculator" | "store";
+
 export default function Home() {
 	const [showPattern, setShowPattern] = useState<boolean>(true);
 	const [simplestPattern, setSimplestPattern] = useState<number[]>([]);
+	// const [currentPage, setCurrentPage] = useState<page>("calculator");
 
 	return (
 		<main className="flex h-screen max-h-screen w-srceen flex-col items-center justify-between py-24">
