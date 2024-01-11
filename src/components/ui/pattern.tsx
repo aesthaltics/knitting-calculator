@@ -4,14 +4,14 @@ import SlidingWindow, { WindowElement } from "./sliding-window";
 import { Button } from "./button";
 
 type pattern_props = {
-	showPattern: boolean;
 	simplestPattern: number[];
 };
 
-const Pattern = ({ showPattern, simplestPattern }: pattern_props) => {
+const Pattern = ({simplestPattern }: pattern_props) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [autoId, setAutoId] = useState<number | undefined>(undefined);
 	const window_ref = useRef<HTMLDivElement>(null);
+	const [showPattern, setShowPattern] = useState(false)
 
 	const pattern_length = simplestPattern.reduce((acc, cur) => acc + cur, 0);
 
@@ -63,59 +63,69 @@ const Pattern = ({ showPattern, simplestPattern }: pattern_props) => {
 	};
 
 	return (
-		<div
-			className="flex flex-col w-full items-center px-4 gap-4"
-			ref={window_ref}
-		>
-			{/* <div className="flex flex-row gap-2 w-full "> */}
-			{simplestPattern.length > 0 && (
-				<div className="flex flex-col text-3xl w-full items-center justify-center">
-					<p>Det enkleste mønsteret er </p>
-					<div className="flex flex-wrap">
-						[
-						{simplestPattern.map((num, index) => (
-							<p key={`pattern text ${index}`}>{num}</p>
-						))}
-						]
+		<div className="flex flex-col gap-5 items-center w-full">
+			<Button
+				onClick={() => setShowPattern((showPattern) => !showPattern)}
+				className="w-min"
+			>
+				{showPattern ? "Vis Tall" : "Vis Mønster"}
+			</Button>
+			<div
+				className="flex flex-col w-full items-center px-4 gap-4"
+				ref={window_ref}
+			>
+				{/* <div className="flex flex-row gap-2 w-full "> */}
+				{simplestPattern.length > 0 && (
+					<div className="flex flex-col text-3xl w-full items-center justify-center">
+						<p>Det enkleste mønsteret er </p>
+						<div className="flex flex-wrap">
+							[
+							{simplestPattern.map((num, index) => (
+								<p key={`pattern text ${index}`}>{num}</p>
+							))}
+							]
+						</div>
 					</div>
-				</div>
-			)}
-			<SlidingWindow>
-				{Object.entries(patternToSquares(simplestPattern)).map(
-					([key, val], i, array) => (
-						<WindowElement
-							current_index={currentIndex}
-							index={i}
-							key={`window element${i}`}
-							marker_width={cellWidth / 3}
-							scroll={scollToView}
-						>
-							<Pattern_square
-								num={(1 + +key).toString()}
-								isActive={val}
-								showPattern={showPattern}
-								totalAmount={array.length}
-								cellWidth={cellWidth}
-							/>
-						</WindowElement>
-					)
 				)}
-			</SlidingWindow>
-			<div className="flex gap-5">
-				<Button
-					onClick={() =>
-						setCurrentIndex(
-							(currentIndex) =>
-								(currentIndex + 1) % pattern_length
+				<SlidingWindow>
+					{Object.entries(patternToSquares(simplestPattern)).map(
+						([key, val], i, array) => (
+							<WindowElement
+								current_index={currentIndex}
+								index={i}
+								key={`window element${i}`}
+								marker_width={cellWidth / 3}
+								scroll={scollToView}
+							>
+								<Pattern_square
+									num={(1 + +key).toString()}
+									isActive={val}
+									showPattern={showPattern}
+									totalAmount={array.length}
+									cellWidth={cellWidth}
+								/>
+							</WindowElement>
 						)
-					}
-				>
-					Neste
-				</Button>
-				<Button onClick={toggleAuto}>{autoId ? "Stop" : "Auto"}</Button>
-			</div>
+					)}
+				</SlidingWindow>
+				<div className="flex gap-5">
+					<Button
+						onClick={() =>
+							setCurrentIndex(
+								(currentIndex) =>
+									(currentIndex + 1) % pattern_length
+							)
+						}
+					>
+						Neste
+					</Button>
+					<Button onClick={toggleAuto}>
+						{autoId ? "Stop" : "Auto"}
+					</Button>
+				</div>
 
-			{/* </div> */}
+				{/* </div> */}
+			</div>
 		</div>
 	);
 };
