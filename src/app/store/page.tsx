@@ -2,6 +2,13 @@ import React from "react";
 
 import ItemCard from "@/components/ui/item-card";
 
+type product = {
+	price: number,
+	title: string,
+	description: string,
+	imageSrc: string,
+};
+
 const Store = () => {
 	return (
 		<div className="flex flex-col gap-5">
