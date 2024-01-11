@@ -4,7 +4,7 @@ import Link from "next/link";
 const pageLinks = [
 	{
 		name: "Kalkulator",
-		href: "/",
+		href: "/calculator",
 	},
 	{
 		name: "Butikk",
@@ -21,6 +21,7 @@ const Nav = () => {
 						href={pageLink.href}
 						key={pageLink.href}
 						className="flex items-center justify-center rounded-full px-4 text-center text-sm outline"
+						
 					>
 						{pageLink.name}
 					</Link>
