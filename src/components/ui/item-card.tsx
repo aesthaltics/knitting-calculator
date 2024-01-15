@@ -12,10 +12,10 @@ import ItemDialog from "./item-dialog";
 
 import Image from "next/image";
 
-import { product } from "@/app/store/page";
+import { Product } from "@/app/store/page";
 
 type Props = {
-	product: product;
+	product: Product;
 };
 const ItemCard = ({ product }: Props) => {
 	const { image, title, description, price } = product;

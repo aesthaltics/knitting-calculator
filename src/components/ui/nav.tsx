@@ -1,5 +1,6 @@
-"use client";
 import Link from "next/link";
+import { signOut } from "@/auth";
+import { Button } from "./button";
 
 const pageLinks = [
 	{
@@ -18,15 +19,22 @@ const Nav = () => {
 			{pageLinks.map((pageLink) => {
 				return (
 					<Link
-						href={pageLink.href}
 						key={pageLink.href}
-						className="flex items-center justify-center rounded-full px-4 text-center text-sm outline"
-						
+						href={pageLink.href}
+						className="flex items-center justify-center"
 					>
-						{pageLink.name}
+						<Button>{pageLink.name}</Button>
 					</Link>
 				);
 			})}
+			<form
+				action={async () => {
+					"use server";
+					await signOut();
+				}}
+			>
+				<Button type="submit">Logg ut</Button>
+			</form>
 		</div>
 	);
 };

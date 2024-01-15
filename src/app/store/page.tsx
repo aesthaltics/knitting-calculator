@@ -4,7 +4,7 @@ import ItemCard from "@/components/ui/item-card";
 
 import { sql } from "@vercel/postgres";
 
-export type product = {
+export type Product = {
 	id: string;
 	price: number;
 	title: string;
@@ -13,9 +13,7 @@ export type product = {
 };
 
 const Store = async () => {
-	const { rows } = await sql`SELECT * FROM product`;
-
-	console.log(rows);
+	const { rows } = await sql<Product>`SELECT * FROM product`;
 	return (
 		<div className="flex flex-col gap-5">
 			<div className="flex items-center justify-center">
@@ -31,7 +29,7 @@ const Store = async () => {
 								className="w-full break-inside-avoid-column py-2"
 								key={row.id}
 							>
-								<ItemCard product={row as product} />
+								<ItemCard product={row} />
 							</div>
 						);
 					})}
@@ -42,7 +40,7 @@ const Store = async () => {
 								className="w-full break-inside-avoid-column py-2"
 								key={row.id}
 							>
-								<ItemCard product={row as product} />
+								<ItemCard product={row} />
 							</div>
 						);
 					})}
@@ -53,7 +51,7 @@ const Store = async () => {
 								className="w-full break-inside-avoid-column py-2"
 								key={row.id}
 							>
-								<ItemCard product={row as product} />
+								<ItemCard product={row} />
 							</div>
 						);
 					})}
