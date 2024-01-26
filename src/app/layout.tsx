@@ -19,11 +19,12 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<div className="flex-col py-10 px-5 h-screen">
+				<div className="flex h-screen min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
 					<Nav />
-					{children}
+					<div className="flex flex-grow w-0">
+						{children}
+					</div>
 				</div>
-
 				<Analytics />
 			</body>
 		</html>

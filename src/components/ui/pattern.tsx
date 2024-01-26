@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState} from "react";
 import SlidingWindow, { WindowElement } from "./sliding-window";
 import { Button } from "./button";
 
@@ -10,16 +10,10 @@ type pattern_props = {
 const Pattern = ({simplestPattern }: pattern_props) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [autoId, setAutoId] = useState<number | undefined>(undefined);
-	const window_ref = useRef<HTMLDivElement>(null);
 	const [showPattern, setShowPattern] = useState(false)
+	const cellWidth = 50
 
 	const pattern_length = simplestPattern.reduce((acc, cur) => acc + cur, 0);
-
-	const cellWidth = Math.max(
-		35,
-		Math.min((window_ref.current?.clientWidth ?? 0) / pattern_length, 100)
-		
-	);
 
 	const toggleAuto = () => {
 		if (autoId) {
@@ -63,7 +57,7 @@ const Pattern = ({simplestPattern }: pattern_props) => {
 	};
 
 	return (
-		<div className="flex flex-col gap-5 items-center w-full">
+		<div className="flex flex-col gap-5 items-center w-full max-w-full">
 			<Button
 				onClick={() => setShowPattern((showPattern) => !showPattern)}
 				className="w-min"
@@ -71,8 +65,7 @@ const Pattern = ({simplestPattern }: pattern_props) => {
 				{showPattern ? "Vis Tall" : "Vis Mønster"}
 			</Button>
 			<div
-				className="flex flex-col w-full items-center px-4 gap-4"
-				ref={window_ref}
+				className="flex flex-col w-full items-center px-4 gap-4 "
 			>
 				{/* <div className="flex flex-row gap-2 w-full "> */}
 				{simplestPattern.length > 0 && (

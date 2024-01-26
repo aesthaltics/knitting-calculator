@@ -15,7 +15,7 @@ export type Product = {
 const Store = async () => {
 	const { rows } = await sql<Product>`SELECT * FROM product`;
 	return (
-		<div className="flex flex-col gap-5">
+		<div className="flex flex-col w-full h-full gap-5">
 			<div className="flex items-center justify-center">
 				<h1 className="text-4xl">
 					Dette er bare en pototype, butikken er ikke klar enda

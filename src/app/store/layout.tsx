@@ -5,12 +5,7 @@ type RootLayoutProps = {
 };
 
 const RootLayout = ({ children }: RootLayoutProps) => {
-	return (
-		<div className="w-full h-full py-5 px-3">
-			{children}
-		</div>
-	);
+	return <div className="w-full h-full flex py-5 px-3">{children}</div>;
 };
 
-
-export default RootLayout
+export default RootLayout;
